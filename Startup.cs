@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,7 +27,8 @@ namespace AspNetCoreWindowsAuthClaims
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            
+            ConfigureAuth(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -52,12 +50,30 @@ namespace AspNetCoreWindowsAuthClaims
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+
+        private void ConfigureAuth(IServiceCollection services)
+        {
+            services.AddSingleton<Auth.MagicPowersInfoProvider>();
+            services.AddAuthentication(IISDefaults.AuthenticationScheme);
+            services.AddTransient<IClaimsTransformation, Auth.MyClaimsLoader>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    Auth.Constants.HasMagicPowersPolicy,
+                    policy => policy.RequireClaim(Auth.Constants.HasMagicPowersClaim));
+                options.AddPolicy(
+                    Auth.Constants.NeverHasMagicPowersPolicy,
+                    policy => policy.RequireClaim(Auth.Constants.NeverHasMagicPowersClaim));
             });
         }
     }
