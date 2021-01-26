@@ -29,6 +29,7 @@ namespace AspNetCoreWindowsAuthClaims.Auth
                 $"power-{userId}",
                 async cacheEntry =>
                 {
+                    // or use cacheEntry.AbsoluteExpiration
                     cacheEntry.SlidingExpiration = TimeSpan.FromSeconds(ClaimCacheInSeconds);
                     bool hasPower = await ExpensiveHasPowerOperation(userId);
                     return hasPower;

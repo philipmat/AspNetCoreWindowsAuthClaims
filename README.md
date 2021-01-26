@@ -1,7 +1,8 @@
 # AspNetCoreWindowsAuthClaims
 Claims loading in ASP.NET Core + Windows Auth
 
-Based on: https://philipm.at/2018/aspnetcore_claims_with_windowsauthentication.html
+Based on: https://philipm.at/2018/aspnetcore_claims_with_windowsauthentication.html  
+and https://philipm.at/2021/cached_claims.html.
 
 ## How to Run
 
