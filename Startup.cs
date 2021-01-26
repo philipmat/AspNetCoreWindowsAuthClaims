@@ -65,7 +65,7 @@ namespace AspNetCoreWindowsAuthClaims
         {
             services.AddSingleton<Auth.MagicPowersInfoProvider>();
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
-            services.AddTransient<IClaimsTransformation, Auth.MyClaimsLoader>();
+            services.AddScoped<IClaimsTransformation, Auth.MyClaimsLoader>();
 
             services.AddAuthorization(options =>
             {
